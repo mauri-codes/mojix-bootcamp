@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters: 
+  indexDocument: 
+    Description: website configuration index document file name
+    Type: "String"
+    Default: "index.html"
+
+Resources:
+  WebsiteBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: my-website-bucket-441
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: !Ref indexDocument
+        ErrorDocument: "error.html"
+    # DeletionPolicy: Retain
+
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Id: MyPolicy
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Join 
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref WebsiteBucket
+                - /*
+      Bucket: !Ref WebsiteBucket
+
+Outputs:
+  WebsiteURL:
+    Value: !GetAtt
+      - WebsiteBucket
+      - WebsiteURL
+    Description: URL for website hosted on S3
