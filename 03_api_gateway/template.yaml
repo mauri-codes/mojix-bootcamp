@@ -1,0 +1,56 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  GetUsers:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.getUsers
+      Runtime: python3.6
+      CodeUri: build/
+      Events:
+        PostUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: "/user"
+            Method: GET
+    
+  PostUser:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.postUser
+      Runtime: python3.6
+      CodeUri: build/
+      Events:
+        PostUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: "/user"
+            Method: POST
+      
+  GetAdmins:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.getAdmins
+      Runtime: python3.6
+      CodeUri: build/
+      Events:
+        PostUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: "/admin"
+            Method: GET
+
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Name: mojix-api
+      DefinitionBody:
+        'Fn::Transform':
+          Name: 'AWS::Include'
+          Parameters:
+            Location: swaggerSpec.yaml
