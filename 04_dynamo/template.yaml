@@ -1,0 +1,96 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  ShowsPerMovie:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.showsPerMovie
+      Runtime: python3.6
+      CodeUri: build/
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref MojixTable
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref MojixTable
+      Events:
+        PostUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: "/showsPerMovie"
+            Method: GET
+    
+  BuyTicket:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.buyTicket
+      Runtime: python3.6
+      CodeUri: build/
+      Policies:
+        - DynamoDBWritePolicy:
+            TableName: !Ref MojixTable
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref MojixTable
+      Events:
+        PostUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: "/buyTicket"
+            Method: POST
+      
+  PeoplePerMovie:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.peoplePerMovie
+      Runtime: python3.6
+      CodeUri: build/
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref MojixTable
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref MojixTable
+      Events:
+        PostUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayApi
+            Path: "/peoplePerMovie/{movieId}"
+            Method: GET
+
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Name: mojix-api
+      DefinitionBody:
+        'Fn::Transform':
+          Name: 'AWS::Include'
+          Parameters:
+            Location: swaggerSpec.yaml
+
+  MojixTable: 
+    Type: AWS::DynamoDB::Table
+    Properties: 
+      AttributeDefinitions: 
+        - 
+          AttributeName: "pk"
+          AttributeType: "S"
+        - 
+          AttributeName: "sk"
+          AttributeType: "S"
+      KeySchema: 
+        - 
+          AttributeName: "pk"
+          KeyType: "HASH"
+        - 
+          AttributeName: "sk"
+          KeyType: "RANGE"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: "5"
+        WriteCapacityUnits: "5"
+      TableName: "mojix-table-5"
