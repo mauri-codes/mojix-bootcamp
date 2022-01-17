@@ -3,4 +3,4 @@ phases:
   build:
     commands:
       - echo hiworld
-      - echo ss
+      - echo s

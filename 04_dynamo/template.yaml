@@ -47,7 +47,6 @@ Resources:
     Properties:
       Handler: app.peoplePerMovie
       Runtime: python3.6
-      CodeUri: build/
       Environment:
         Variables:
           TABLE_NAME: !Ref MojixTable
