@@ -1,0 +1,15 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - ls
+  pre_build:
+    commands:
+      - echo 1
+  build:
+    commands:
+      - echo 2
+  post_build:
+    commands:
+      - echo 4
