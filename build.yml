@@ -9,6 +9,8 @@ phases:
   build:
     commands:
     #   - ./deploy.sh -b
+    - echo 1
   post_build:
     commands:
     #   - ./deploy.sh -d
+    - echo 2
