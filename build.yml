@@ -3,6 +3,7 @@ version: 0.2
 phases:
   install:
     commands:
+      - cd 04_dynamo
       - ./deploy.sh -i
   build:
     commands:
