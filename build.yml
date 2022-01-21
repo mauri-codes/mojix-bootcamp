@@ -13,4 +13,4 @@ phases:
   post_build:
     commands:
     #   - ./deploy.sh -d
-    - echo 2
+    - echo 3
