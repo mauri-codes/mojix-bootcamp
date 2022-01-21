@@ -1,0 +1,13 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - ls
+  build:
+    commands:
+    - ls 04_dynamo
+  post_build:
+    commands:
+    #   - ./deploy.sh -d
+    - echo 3
